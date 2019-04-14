@@ -73,7 +73,8 @@ class _FancyFabState extends State<FancyFab>
   Widget add() {
     return Container(
       child: FloatingActionButton(
-        onPressed: null,
+        onPressed: () => Scaffold.of(context)
+                    .showSnackBar(SnackBar(content: Text('Add'))),
         tooltip: 'Add',
         child: Icon(Icons.add),
       ),
@@ -83,7 +84,8 @@ class _FancyFabState extends State<FancyFab>
   Widget image() {
     return Container(
       child: FloatingActionButton(
-        onPressed: null,
+        onPressed: () => Scaffold.of(context)
+                    .showSnackBar(SnackBar(content: Text('Image'))),
         tooltip: 'Image',
         child: Icon(Icons.image),
       ),
@@ -93,7 +95,8 @@ class _FancyFabState extends State<FancyFab>
   Widget inbox() {
     return Container(
       child: FloatingActionButton(
-        onPressed: null,
+        onPressed: () => Scaffold.of(context)
+                    .showSnackBar(SnackBar(content: Text('Inbox'))),
         tooltip: 'Inbox',
         child: Icon(Icons.inbox),
       ),
