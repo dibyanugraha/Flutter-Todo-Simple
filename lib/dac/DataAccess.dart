@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:sqflite/sqflite.dart';
 import 'package:todos/models/todo.dart';
 
-final String todoTable = "TodoItems";
+final String todoTable = "Todos";
 
 class DataAccess {
   static final DataAccess _instance = DataAccess._internal();
@@ -17,7 +17,7 @@ class DataAccess {
   Future open() async {
 
     var databasesPath = await getDatabasesPath();
-    String path = databasesPath + "\todo.db";
+    String path = databasesPath + "\\todos.db";
 
     _db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {

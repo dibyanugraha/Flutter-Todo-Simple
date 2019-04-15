@@ -63,8 +63,6 @@ class TodoListScreenState extends State<TodoListScreen> {
         _todos = r;
       });
     });
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => AddTodoItemScreen()));
   }
 
   Future<Null> _displayDeleteConfirmationDialog(Todo todo) {
@@ -111,7 +109,7 @@ class TodoListScreenState extends State<TodoListScreen> {
               });
 
               Scaffold.of(context).showSnackBar(
-                  SnackBar(content: Text("${item.id} dismissed")));
+                  SnackBar(content: Text("${item.name} deleted")));
             },
             background: Container(color: Colors.red),
             child: _todos.map(_createTodoWidget).elementAt(index),
