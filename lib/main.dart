@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:todos/FancyFab.dart';
+import 'package:todos/screen/TodoListScreen.dart';
 
 void main() {
   runApp(MyApp());
@@ -8,26 +9,33 @@ void main() {
 
 // MyApp is a StatefulWidget. This allows us to update the state of the
 // Widget whenever an item is removed.
-class MyApp extends StatefulWidget {
-  MyApp({Key key}) : super(key: key);
-
+class MyApp extends StatelessWidget {
+  // This widget is the root of your application.
   @override
-  MyAppState createState() {
-    return MyAppState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Todo Flutter',
+      theme: new ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: TodoListScreen(title: 'Todo List'),
+    );
   }
 }
 
 class MyAppState extends State<MyApp> {
-  final items = List<String>.generate(3, (i) => "Item ${i + 1}");
+  final items = List<String>.generate(5, (i) => "Item ${i + 1}");
 
   @override
   Widget build(BuildContext context) {
-    final title = 'Dismissing Items';
+    final title = 'Todo List';
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: title,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.red,
       ),
       home: Scaffold(
         appBar: AppBar(
