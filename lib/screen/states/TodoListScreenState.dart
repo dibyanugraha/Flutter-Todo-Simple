@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:todos/FancyFab.dart';
 import 'package:todos/dac/DataAccess.dart';
 import 'package:todos/models/todo.dart';
+import 'package:todos/screen/AddTodoItemScreen.dart';
 import 'package:todos/screen/TodoListScreen.dart';
 
 class TodoListScreenState extends State<TodoListScreen> {
@@ -11,27 +13,17 @@ class TodoListScreenState extends State<TodoListScreen> {
     _dataAccess = DataAccess();
   }
 
-  // @override
-  // initState() {
-  //   super.initState();
-  //   _dataAccess.open().then(
-  //     (result) => _dataAccess.getTodoItems()
-  //                   .then(
-  //                     (todoList) => setState(() => _todos = todoList)
-  //                   )
-  //   );
-  // }
-@override
+  @override
   initState() {
     super.initState();
-    _dataAccess.open().then((result) { 
-      _dataAccess.getTodoItems()
-                .then((r) {
-                  setState(() { _todos = r; });
-                });
+    _dataAccess.open().then((result) {
+      _dataAccess.getTodoItems().then((r) {
+        setState(() {
+          _todos = r;
+        });
+      });
     });
   }
-  void _addTodoItem() {}
 
   Widget _createTodoWidget(Todo todo) {
     return ListTile(
@@ -45,21 +37,34 @@ class TodoListScreenState extends State<TodoListScreen> {
   }
 
   void _updateTodoCompleteStatus(Todo todo, bool newStatus) {
-    final tempTodoItems = _todos;
-    tempTodoItems.firstWhere((i) => i.id == todo.id).isComplete = newStatus;
-    setState(() {
-      _todos = tempTodoItems;
+    todo.isComplete = newStatus;
+    _dataAccess.updateTodo(todo);
+    _dataAccess.getTodoItems().then((items) {
+      setState(() {
+        _todos = items;
+      });
     });
-    // TODO: Persist change
   }
 
   void _deleteTodo(Todo todo) {
-    final tempTodoItems = _todos;
-    tempTodoItems.remove(todo);
-    setState(() {
-      _todos = tempTodoItems;
+    _dataAccess.deleteTodo(todo);
+    _dataAccess.getTodoItems().then((items) {
+      setState(() {
+        _todos = items;
+      });
     });
-    // TODO: Persist change
+  }
+
+  void _addTodoItem() async {
+    await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => AddTodoItemScreen()));
+    _dataAccess.getTodoItems().then((r) {
+      setState(() {
+        _todos = r;
+      });
+    });
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => AddTodoItemScreen()));
   }
 
   Future<Null> _displayDeleteConfirmationDialog(Todo todo) {
@@ -78,7 +83,6 @@ class TodoListScreenState extends State<TodoListScreen> {
               FlatButton(
                 child: Text("Delete"),
                 onPressed: () {
-                  _deleteTodo(todo);
                   Navigator.of(context).pop(); // Close dialog
                 },
               ),
@@ -99,22 +103,16 @@ class TodoListScreenState extends State<TodoListScreen> {
           final item = _todos[index];
 
           return Dismissible(
-            // Each Dismissible must contain a Key. Keys allow Flutter to
-            // uniquely identify Widgets.
             key: Key(item.id.toString()),
-            // We also need to provide a function that tells our app
-            // what to do after an item has been swiped away.
             onDismissed: (direction) {
-              // Remove the item from our data source.
               setState(() {
                 _todos.removeAt(index);
+                _deleteTodo(item);
               });
 
-              // Then show a snackbar!
-              Scaffold.of(context)
-                  .showSnackBar(SnackBar(content: Text("$item dismissed")));
+              Scaffold.of(context).showSnackBar(
+                  SnackBar(content: Text("${item.id} dismissed")));
             },
-            // Show a red background as the item is swiped away
             background: Container(color: Colors.red),
             child: _todos.map(_createTodoWidget).elementAt(index),
           );
@@ -126,11 +124,7 @@ class TodoListScreenState extends State<TodoListScreen> {
         child: Icon(Icons.add),
       ),
       drawer: Drawer(
-        // Add a ListView to the drawer. This ensures the user can scroll
-        // through the options in the Drawer if there isn't enough vertical
-        // space to fit everything.
         child: ListView(
-          // Important: Remove any padding from the ListView.
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
@@ -142,18 +136,12 @@ class TodoListScreenState extends State<TodoListScreen> {
             ListTile(
               title: Text('Item 1'),
               onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
                 Navigator.pop(context);
               },
             ),
             ListTile(
               title: Text('Item 2'),
               onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
                 Navigator.pop(context);
               },
             ),

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:todos/dac/DataAccess.dart';
+import 'package:todos/models/todo.dart';
 import 'package:todos/screen/AddTodoItemScreen.dart';
 
 class AddTodoItemScreenState extends State<AddTodoItemScreen> {
+  final _todoNameController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,7 +16,8 @@ class AddTodoItemScreenState extends State<AddTodoItemScreen> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 TextFormField(
-                    decoration: InputDecoration(labelText: "Todo Name")),
+                    decoration: InputDecoration(labelText: "Todo Name"),
+                    controller: _todoNameController,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
@@ -25,7 +30,7 @@ class AddTodoItemScreenState extends State<AddTodoItemScreen> {
                     RaisedButton(
                       child: Text("Save"),
                       onPressed: () {
-                        //TODO: Save
+                        DataAccess().insertTodo(Todo(name: _todoNameController.text));
                         Navigator.pop(context);
                       },
                     )
@@ -33,5 +38,11 @@ class AddTodoItemScreenState extends State<AddTodoItemScreen> {
                 )
               ],
             )));
+  }
+
+  @override
+  void dispose() {
+    _todoNameController.dispose();
+    super.dispose();
   }
 }
