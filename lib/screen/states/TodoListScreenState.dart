@@ -4,6 +4,7 @@ import 'package:todos/dac/DataAccess.dart';
 import 'package:todos/models/todo.dart';
 import 'package:todos/screen/AddTodoItemScreen.dart';
 import 'package:todos/screen/TodoListScreen.dart';
+import 'package:todos/screen/UpdateTodoScreen.dart';
 
 class TodoListScreenState extends State<TodoListScreen> {
   List<Todo> _todos = List();
@@ -17,7 +18,7 @@ class TodoListScreenState extends State<TodoListScreen> {
   initState() {
     super.initState();
     _dataAccess.open().then((result) {
-      _dataAccess.getTodoItems().then((r) {
+      _dataAccess.getTodos().then((r) {
         setState(() {
           _todos = r;
         });
@@ -33,13 +34,14 @@ class TodoListScreenState extends State<TodoListScreen> {
         onChanged: (value) => _updateTodoCompleteStatus(todo, value),
       ),
       onLongPress: () => _displayDeleteConfirmationDialog(todo),
+      onTap: () => _showUpdateTodo(todo),
     );
   }
 
   void _updateTodoCompleteStatus(Todo todo, bool newStatus) {
     todo.isComplete = newStatus;
     _dataAccess.updateTodo(todo);
-    _dataAccess.getTodoItems().then((items) {
+    _dataAccess.getTodos().then((items) {
       setState(() {
         _todos = items;
       });
@@ -48,7 +50,7 @@ class TodoListScreenState extends State<TodoListScreen> {
 
   void _deleteTodo(Todo todo) {
     _dataAccess.deleteTodo(todo);
-    _dataAccess.getTodoItems().then((items) {
+    _dataAccess.getTodos().then((items) {
       setState(() {
         _todos = items;
       });
@@ -58,7 +60,17 @@ class TodoListScreenState extends State<TodoListScreen> {
   void _addTodoItem() async {
     await Navigator.push(
         context, MaterialPageRoute(builder: (context) => AddTodoItemScreen()));
-    _dataAccess.getTodoItems().then((r) {
+    _dataAccess.getTodos().then((r) {
+      setState(() {
+        _todos = r;
+      });
+    });
+  }
+
+  void _showUpdateTodo(Todo todo) async {
+    await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => UpdateTodoScreen(todo: todo)));
+    _dataAccess.getTodos().then((r) {
       setState(() {
         _todos = r;
       });
@@ -103,6 +115,7 @@ class TodoListScreenState extends State<TodoListScreen> {
 
           return Dismissible(
             key: Key(item.id.toString()),
+            
             onDismissed: (direction) {
               setState(() {
                 _todos.removeAt(index);

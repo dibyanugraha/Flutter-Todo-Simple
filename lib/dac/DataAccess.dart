@@ -29,18 +29,21 @@ class DataAccess {
             ''');
     });
 
-    // This is just a convenience block to populate the database if it's empty.
-    // We likely wouldn't use this in a real application
-    if((await getTodoItems()).length == 0) {      
+    if((await getTodos()).length == 0) {      
       insertTodo(Todo(name: "Create First Todo", isComplete: true));
       insertTodo(Todo(name: "Run a Marathon"));
       insertTodo(Todo(name: "Create Todo_Flutter blog post"));
     }
   }
 
-  Future<List<Todo>> getTodoItems() async {
+  Future<List<Todo>> getTodos() async {
     var data = await _db.query(todoTable);
     return data.map((d) => Todo.fromMap(d)).toList();
+  }
+
+  Future<Todo> getTodo(String name) async {
+    var data = await _db.query(todoTable);
+    return data.map((d) => Todo.fromMap(d)).firstWhere((t) => t.name == name);
   }
 
   Future insertTodo(Todo item) {

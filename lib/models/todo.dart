@@ -1,13 +1,12 @@
 
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 
 class Todo extends Equatable {
   int id;
-  final String name;
+  String name;
   bool isComplete;
 
-  Todo({this.id, @required this.name, this.isComplete = false});
+  Todo({this.id, this.name, this.isComplete = false});
   
   Todo.fromMap(Map<String, dynamic> map)
   : id = map["id"],
