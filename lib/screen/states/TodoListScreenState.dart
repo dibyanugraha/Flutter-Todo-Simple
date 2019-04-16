@@ -81,6 +81,7 @@ class TodoListScreenState extends State<TodoListScreen> {
               FlatButton(
                 child: Text("Delete"),
                 onPressed: () {
+                  _deleteTodo(todo);
                   Navigator.of(context).pop(); // Close dialog
                 },
               ),
